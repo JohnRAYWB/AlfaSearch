@@ -1,7 +1,7 @@
 const {Schema, model} = require('mongoose')
 
 const Entity = new Schema({
-    name: {type: String}
+    name: {type: String},
     gPerson: {type: String},
     inn: {type: String},
     OGRN: {type: String},

@@ -4,6 +4,7 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 const swaggerUi = require("swagger-ui-express")
 const swaggerDocument = require('./swagger.js')
+const router = require("./routes/index")
 
 const app = express()
 
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 5000
 app.use(express.json())
 app.use(cors())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use('/', router)
 
 const start = async () => {
     try {
