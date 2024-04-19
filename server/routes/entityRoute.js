@@ -3,6 +3,7 @@ const entityController = require("../controllers/entityController")
 
 const router = new Router()
 
-router.get('/', entityController.getEntities)
+router.get('/', entityController.getEntitiesFromDB)
+router.get('/search', entityController.getEntities)
 
 module.exports = router
