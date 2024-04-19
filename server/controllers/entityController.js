@@ -60,4 +60,41 @@ module.exports = new class EntityController {
             console.log(e)
         }
     }
+
+    async updateEntity (request, response) {
+        try {
+            const candidate = await Entity.findById(request.params.id)
+
+            if(candidate) {
+                const queryToken = (await axios.post("https://egrul.nalog.ru/", {
+                    "query": candidate.inn,
+                }))
+                const searchingEntities = await axios.get(`https://egrul.nalog.ru/search-result/${queryToken.data['t']}`)
+
+                const dateStart = searchingEntities.data['rows'][0].r ?
+                    new Date(searchingEntities.data['rows'][0].r.replace(/(\d+).(\d+).(\d+)/, '$3/$2/$1'))
+                    : null
+                const dateEnd = searchingEntities.data['rows'][0].e ?
+                    new Date(searchingEntities.data['rows'][0].e.replace(/(\d+).(\d+).(\d+)/, '$3/$2/$1'))
+                    : null
+
+                await candidate.updateOne({}, {$set: {
+                        name: searchingEntities.data['rows'][0].n,
+                        gPerson: searchingEntities.data['rows'][0].g,
+                        inn: searchingEntities.data['rows'][0].i,
+                        OGRN: searchingEntities.data['rows'][0].o,
+                        region: searchingEntities.data['rows'][0].rn,
+                        dateStart: dateStart,
+                        dateEnd: dateEnd,
+                        pdfLink: searchingEntities.data['rows'][0].t,
+                    }})
+
+                return response.json(candidate)
+            } else {
+                return response.json("Данные не найдены")
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
 }
