@@ -2,24 +2,41 @@ const axios = require("axios")
 const Entity = require("../models/entity")
 
 module.exports = new class EntityController {
+
     async getEntitiesFromDB(request, response) {
         try {
-            const candidates = await Entity.find(
-                {
-                    $or:
-                        [
-                            {name: {$regex: new RegExp(request.body.query, 'i')}},
-                            {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
-                            {inn: {$regex: new RegExp(request.body.query, 'i')}},
-                        ]
-                }
-            ).limit(20).skip(request.query.page)
+            if(request.body.query) {
+                const candidates = await Entity.find(
+                    {
+                        $or:
+                            [
+                                {name: {$regex: new RegExp(request.body.query, 'i')}},
+                                {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
+                                {inn: {$regex: new RegExp(request.body.query, 'i')}},
+                            ]
+                    }
+                ).limit(20).skip(request.query.page * 20)
 
-            if (candidates.length === 0) {
-                return response.json('В базе данных нет того что вы ищите')
+                const count = await Entity.find(
+                    {
+                        $or:
+                            [
+                                {name: {$regex: new RegExp(request.body.query, 'i')}},
+                                {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
+                                {inn: {$regex: new RegExp(request.body.query, 'i')}},
+                            ]
+                    }
+                ).countDocuments()
+
+                if (candidates.length === 0) {
+                    return response.json([])
+                } else {
+                    return response.json({candidates: candidates, count: count})
+                }
             } else {
-                return response.json(candidates)
+                return response.json([])
             }
+
         } catch (e) {
             console.log(e)
         }
