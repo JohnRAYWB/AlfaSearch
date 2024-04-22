@@ -9,3 +9,7 @@ export const getEntitiesFromDB = async (query, page) => {
 export const getOuterEntities = async (query, page) => {
     return (await axios.post(`${baseUrl}/entity/search/?page=${page}`, {query: query})).data
 }
+
+export const putUpdateEntity = async (id) => {
+    return (await axios.put(`${baseUrl}/entity/update/${id}`)).data
+}

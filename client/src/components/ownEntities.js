@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getEntitiesFromDB} from "./api";
+import {getEntitiesFromDB, putUpdateEntity} from "./api";
 
 const OwnEntities = ({entities, setEntities, value, hideOwnEntities}) => {
 
@@ -35,11 +35,12 @@ const OwnEntities = ({entities, setEntities, value, hideOwnEntities}) => {
                 null
             }
             {entities.candidates && entities.candidates.map((entity, index) =>
-                <div key={entity.id}>
+                <div key={entity._id}>
                     <p>{index + 1}</p>
                     <p>{entity.name}</p>
                     <p>{entity.inn}</p>
                     <p>{entity.dateStart}</p>
+                    <button onClick={() => putUpdateEntity(entity._id)}>Update</button>
                 </div>
             )}
             {entities.count && entities.count > 0 ?
