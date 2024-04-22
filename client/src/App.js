@@ -2,6 +2,8 @@ import {useState} from "react";
 import OwnEntities from "./components/ownEntities";
 import OuterEntities from "./components/outerEntities";
 
+import styles from "./components/styles/appPage.module.css"
+
 function App() {
     const [entities, setEntities] = useState([])
     const [value, setValue] = useState('')
@@ -13,50 +15,66 @@ function App() {
     }
 
     return (
-        <div>
-            {value.length === 0 ?
-                <p>Введите запрос</p>
-                :
-                <>
-                    {entities.count > 0 ?
-                        <div>
-                            <div>
+        <div className={styles.main}>
+            <div className={styles.mainElem}>
+                <div className={styles.hideSearchContainer}>
+                    <p>Введите запрос</p>
+                    <input className={styles.input} onChange={e => setValue(e.target.value)}
+                           placeholder={'Укажите ИНН или наименование ФИО ИП'}/>
+                </div>
+                {value.length === 0 ?
+                    null
+                    :
+                    <>
+                        {entities.count > 0 ?
+                            <div className={styles.hideSearchContainer}>
                                 <p>По вашему запросу найдето {entities.count} записей</p>
                                 {hideOwnEntities ?
-                                    <button onClick={() => setHideOwnEntities(false)}>Открыть результ поиска</button>
+                                    <button className={styles.hideButtonAccept}
+                                            onClick={() => setHideOwnEntities(false)}>Открыть результ
+                                        поиска с базы данных</button>
                                     :
-                                    <button onClick={() => setHideOwnEntities(true)}>Скрыть результ поиска</button>
+                                    <button className={styles.hideButtonCancel}
+                                            onClick={() => setHideOwnEntities(true)}>Скрыть результ
+                                        поиска</button>
                                 }
                             </div>
-                        </div>
-                        :
-                        null
-                    }
-                </>
-            }
-            <input onChange={e => setValue(e.target.value)}/>
-            <OwnEntities
-                entities={entities}
-                setEntities={setEntities}
-                value={value}
-                hideOwnEntities={hideOwnEntities}
-            />
+                            :
+                            null
+                        }
+                    </>
+                }
+            </div>
+            <div className={!hideOwnEntities ? styles.mainElem : null}>
+                <OwnEntities
+                    entities={entities}
+                    setEntities={setEntities}
+                    value={value}
+                    hideOwnEntities={hideOwnEntities}
+                />
+            </div>
             {value.length !== 0 ?
-                <>
+                <div className={styles.mainElem}>
                     {!showOuterEntities ?
-                        <button onClick={acceptSearchEgrul}>Не нашли то что искали? Начать поиск в ЕГРЮЛ/ЕГРИП?</button>
+                        <button className={styles.hideButtonAccept} onClick={acceptSearchEgrul}>Не нашли то что искали?
+                            Начать поиск в ЕГРЮЛ/ЕГРИП?</button>
                         :
-                        <button onClick={acceptSearchEgrul}>Закончить поиск в ЕГРЮЛ/ЕГРИП?</button>
+                        <div>
+                            <button className={styles.hideButtonCancel} onClick={acceptSearchEgrul}>Закончить поиск в
+                                ЕГРЮЛ/ЕГРИП?
+                            </button>
+                            {showOuterEntities && value.length !== 0 ?
+                                <OuterEntities value={value} showOuterEntities={showOuterEntities}/>
+                                :
+                                null
+                            }
+                        </div>
                     }
-                </>
+                </div>
                 :
                 null
             }
-            {showOuterEntities && value.length !== 0 ?
-                <OuterEntities value={value} showOuterEntities={showOuterEntities}/>
-                :
-                null
-            }
+
         </div>
     );
 }
