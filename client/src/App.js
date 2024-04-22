@@ -1,10 +1,16 @@
 import {useState} from "react";
 import OwnEntities from "./components/ownEntities";
+import OuterEntities from "./components/outerEntities";
 
 function App() {
     const [entities, setEntities] = useState([])
     const [value, setValue] = useState('')
     const [hideOwnEntities, setHideOwnEntities] = useState(false)
+    const [showOuterEntities, setShowOuterEntities] = useState(false)
+
+    const acceptSearchEgrul = () => {
+        setShowOuterEntities(prevState => !prevState)
+    }
 
     return (
         <div>
@@ -35,6 +41,22 @@ function App() {
                 value={value}
                 hideOwnEntities={hideOwnEntities}
             />
+            {value.length !== 0 ?
+                <>
+                    {!showOuterEntities ?
+                        <button onClick={acceptSearchEgrul}>Не нашли то что искали? Начать поиск в ЕГРЮЛ/ЕГРИП?</button>
+                        :
+                        <button onClick={acceptSearchEgrul}>Закончить поиск в ЕГРЮЛ/ЕГРИП?</button>
+                    }
+                </>
+                :
+                null
+            }
+            {showOuterEntities && value.length !== 0 ?
+                <OuterEntities value={value} showOuterEntities={showOuterEntities}/>
+                :
+                null
+            }
         </div>
     );
 }
