@@ -45,7 +45,7 @@ function App() {
                     </>
                 }
             </div>
-            <div className={!hideOwnEntities ? styles.mainElem : null}>
+            <div className={entities.candidates && !hideOwnEntities ? styles.mainElem : null}>
                 <OwnEntities
                     entities={entities}
                     setEntities={setEntities}

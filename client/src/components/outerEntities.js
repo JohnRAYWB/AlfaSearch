@@ -14,7 +14,7 @@ const OuterEntities = ({value, showOuterEntities}) => {
             setOuterEntities([])
         }
     }, [value, page, showOuterEntities])
-    console.log(outerEntities)
+
     return (
         <div className={styles.outerEntityContainer}>
             {outerEntities && outerEntities.map(entity =>

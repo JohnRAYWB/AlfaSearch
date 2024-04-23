@@ -6,27 +6,53 @@ module.exports = new class EntityController {
     async getEntitiesFromDB(request, response) {
         try {
             if(request.body.query) {
-                const candidates = await Entity.find(
-                    {
-                        $or:
-                            [
-                                {name: {$regex: new RegExp(request.body.query, 'i')}},
-                                {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
-                                {inn: {$regex: new RegExp(request.body.query, 'i')}},
-                            ]
-                    }
-                ).limit(20).skip(request.query.page * 20)
+                let candidates
+                let count
+                if(request.query.date === 'true') {
+                    candidates = await Entity.find(
+                        {
+                            $or:
+                                [
+                                    {name: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {inn: {$regex: new RegExp(request.body.query, 'i')}},
+                                ]
+                        }
+                    ).limit(20).skip(request.query.page * 20).nor([{dateEnd: null}])
 
-                const count = await Entity.find(
-                    {
-                        $or:
-                            [
-                                {name: {$regex: new RegExp(request.body.query, 'i')}},
-                                {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
-                                {inn: {$regex: new RegExp(request.body.query, 'i')}},
-                            ]
-                    }
-                ).countDocuments()
+                    count = await Entity.find(
+                        {
+                            $or:
+                                [
+                                    {name: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {inn: {$regex: new RegExp(request.body.query, 'i')}},
+                                ]
+                        }
+                    ).countDocuments().nor([{dateEnd: null}])
+                } else {
+                    candidates = await Entity.find(
+                        {
+                            $or:
+                                [
+                                    {name: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {inn: {$regex: new RegExp(request.body.query, 'i')}},
+                                ]
+                        }
+                    ).limit(20).skip(request.query.page * 20)
+
+                    count = await Entity.find(
+                        {
+                            $or:
+                                [
+                                    {name: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {gPerson: {$regex: new RegExp(request.body.query, 'i')}},
+                                    {inn: {$regex: new RegExp(request.body.query, 'i')}},
+                                ]
+                        }
+                    ).countDocuments()
+                }
 
                 if (candidates.length === 0) {
                     return response.json([])

@@ -7,11 +7,15 @@ import {usePagination} from "./usePagination";
 const OwnEntities = ({entities, setEntities, value, hideOwnEntities}) => {
 
     const [activePage, setActivePage] = useState(0)
-    const [dateEndFilter, setDateEndFilter] = useState(false)
+    const [filter, setFilter] = useState(false)
 
     useEffect(() => {
-        getEntitiesFromDB(value, activePage).then(entities => setEntities(entities))
-    }, [value, activePage])
+        getEntitiesFromDB(value, activePage, filter).then(entities => setEntities(entities))
+    }, [value, activePage, filter])
+
+    useEffect(() => {
+        setActivePage(0)
+    }, [filter])
 
     useEffect(() => {
         if (value.length === 0) {
@@ -19,16 +23,25 @@ const OwnEntities = ({entities, setEntities, value, hideOwnEntities}) => {
         }
     }, [value])
 
-    const pageCount = Math.floor(entities.count / 20)
+    const pageCount = Math.ceil(entities.count / 20)
     const pages = []
 
     usePagination(pages, pageCount, activePage)
 
-    const nextPage = () => setActivePage(prev => prev === pages[pages.length - 1] ? prev : prev + 1)
+    const nextPage = () => setActivePage(prev => prev === pageCount - 1 ? prev : prev + 1)
     const prevPage = () => setActivePage(prev => prev !== 0 ? prev - 1 : 0)
 
     return (
-        <div className={styles.main} hidden={hideOwnEntities}>
+        <div className={styles.main} style={hideOwnEntities ? {display: 'none'} : null}>
+            <div className={styles.filterContainer}>
+                <p>Фильтровать: </p>
+                <div className={styles.checkboxContainer}>
+                    <p className={styles.checkboxTitle}>Дата прекращения деятельности</p>
+                    <div className={filter ? styles.checkboxAccepted : styles.checkbox}>
+                        <input type={'checkbox'} onClick={() => setFilter(prev => !prev)}/>
+                    </div>
+                </div>
+            </div>
             {entities.count && entities.count > 0 ?
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} onClick={prevPage}>Назад</button>
