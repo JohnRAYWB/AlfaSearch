@@ -33,7 +33,7 @@ const OwnEntities = ({entities, setEntities, value, hideOwnEntities}) => {
 
     return (
         <div className={styles.main} style={hideOwnEntities ? {display: 'none'} : null}>
-            <div className={styles.filterContainer}>
+            <div className={styles.filterContainer} style={value.length === 0 ? {display: 'none'} : null}>
                 <p>Фильтровать: </p>
                 <div className={styles.checkboxContainer}>
                     <p className={styles.checkboxTitle}>Дата прекращения деятельности</p>

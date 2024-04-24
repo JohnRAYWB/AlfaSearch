@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = 'http://localhost:5000'
+const baseUrl = 'http://localhost:4221'
 
 export const getEntitiesFromDB = async (query, page, date) => {
     return (await axios.post(`${baseUrl}/entity/?page=${page}&date=${date}`, {query: query})).data

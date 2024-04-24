@@ -8,9 +8,9 @@ const router = require("./routes/index")
 
 const app = express()
 
-const url = `mongodb://${process.env.MONGODB_URL}:${process.env.MONGODB_PORT}/${process.env.MONGODB_NAME}`
+const url = `mongodb://mongo_db:27017/alfaSearch`
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 4221
 
 app.use(express.json())
 app.use(cors())

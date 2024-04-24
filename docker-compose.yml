@@ -1,0 +1,27 @@
+version: '3'
+services:
+  server:
+    build: /server
+    container_name: server
+    env_file:
+      - ./server/.env
+    ports:
+      - 4221:4221
+    depends_on:
+      - mongo_db
+  mongo_db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+  client:
+    build: /client
+    container_name: client
+    ports:
+      - 3000:3000
+    stdin_open: true
+volumes:
+  mongo_data:
+    driver: local
